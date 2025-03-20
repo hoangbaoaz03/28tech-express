@@ -1,0 +1,54 @@
+mixin pagination()
+    nav
+        ul(class="pagination")
+            // Kiểm tra nếu không phải trang đầu tiên thì hiển thị nút "Trang trước"
+            - if (pagination.currentPage > 1)
+                li(class="page-item")
+                    button(
+                        class="page-link"
+                        button-pagination=pagination.currentPage-1
+                    ) Trang trước
+            - else
+                li(class="page-item disabled")
+                    button(class="page-link") Trang trước
+
+            // Xác định khoảng trang hiển thị
+            - var startPage = Math.max(1, pagination.currentPage - 1);
+            - var endPage = Math.min(pagination.totalPage, pagination.currentPage + 1);
+
+            // Nếu không phải trang đầu tiên, hiển thị trang 1
+            - if (startPage > 1)
+                li(class="page-item")
+                    button(class="page-link" button-pagination=1) 1
+                // Hiển thị dấu "..." nếu có trang bị ẩn phía trước
+                - if (startPage > 2)
+                    li(class="page-item disabled")
+                        span(class="page-link") ...
+
+            // Hiển thị các trang gần trang hiện tại
+            - for (var i = startPage; i <= endPage; i++)
+                li(class=`page-item ${pagination.currentPage == i ? "active" : ""}`)
+                    button(
+                        class="page-link"
+                        button-pagination=i
+                    ) #{i}
+
+            // Nếu không phải trang cuối cùng, hiển thị trang cuối cùng
+            - if (endPage < pagination.totalPage)
+                // Hiển thị dấu "..." nếu có trang bị ẩn phía sau
+                - if (endPage < pagination.totalPage - 1)
+                    li(class="page-item disabled")
+                        span(class="page-link") ...
+                li(class="page-item")
+                    button(class="page-link" button-pagination=pagination.totalPage) #{pagination.totalPage}
+
+            // Kiểm tra nếu không phải trang cuối cùng thì hiển thị nút "Kế tiếp"
+            - if (pagination.currentPage < pagination.totalPage)
+                li(class="page-item")
+                    button(
+                        class="page-link"
+                        button-pagination=pagination.currentPage+1
+                    ) Kế tiếp
+            - else
+                li(class="page-item disabled")
+                    button(class="page-link") Kế tiếp
