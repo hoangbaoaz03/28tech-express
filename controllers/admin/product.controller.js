@@ -1,10 +1,12 @@
 const Product = require("../../models/product.model");
+const ProductCategory = require("../../models/product-category.model");
 
 const systemConfig = require("../../config/system");
 
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
+const createTreeHelper = require("../../helpers/createTree");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
@@ -42,11 +44,11 @@ module.exports.index = async (req, res) => {
   //END Pagination
 
   //Sort
-  let sort = {}
+  let sort = {};
 
-  if(req.query.sortKey && req.query.sortValue){
-    sort[req.query.sortKey] = req.query.sortValue
-  }else{
+  if (req.query.sortKey && req.query.sortValue) {
+    sort[req.query.sortKey] = req.query.sortValue;
+  } else {
     sort.position = "desc";
   }
   //End Sort
@@ -142,8 +144,17 @@ module.exports.deleteItem = async (req, res) => {
 
 //[GET] admin/products/create
 module.exports.create = async (req, res) => {
+  let find = {
+    deleted: false,
+  };
+
+  const category = await ProductCategory.find(find);
+
+  const newCategory = createTreeHelper.tree(category);
+
   res.render("admin/pages/products/create", {
     pageTitle: "Them moi san pham",
+    category: newCategory,
   });
 };
 
@@ -178,9 +189,14 @@ module.exports.edit = async (req, res) => {
 
     const product = await Product.findOne(find);
 
+    const category = await ProductCategory.find({ deleted: false });
+
+    const newCategory = createTreeHelper.tree(category);
+
     res.render("admin/pages/products/edit", {
       pageTitle: "Chinh sua san pham",
       product: product,
+      category: newCategory,
     });
   } catch (error) {
     req.flash("error", "Product not found!");
