@@ -1,15 +1,14 @@
 extends ../../layouts/default.pug
 include ../../mixins/alert.pug
+include ../../mixins/select-tree.pug
 
 block main 
-    +alert-error(5000)
-    +alert-success(5000)
+    h1(class="mb-4") Chinh sua danh muc san pham 
 
-    h1(class="mb-4") Chinh sua san pham 
+    +alert-error(5000)
 
     form(
-        action=`${prefixAdmin}/products/edit/${product.id}?_method=PATCH`
-        id="form-create-product"
+        action=`${prefixAdmin}/product-category/edit/${record.id}?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"
     )
@@ -21,8 +20,18 @@ block main
                 id="title"
                 name="title"
                 required
-                value=product.title 
-            ) 
+                value=record.title
+            )
+        div(class="form-group")
+            label(for="parent_id") Danh muc cha
+            select(
+                name="parent_id"
+                id="parent_id"
+                class="form-control"
+            )
+                option(value="") -- Danh muc cha --
+                if(records)
+                    +select-tree(records, 1, record.parent_id)
         div(class="form-group")
             label(for="desc") Mo ta  
             textarea(
@@ -30,42 +39,12 @@ block main
                 id="desc"
                 name="description"
                 rows="5"
-            ) #{product.description}
-        div(class="form-group")
-            label(for="price") Gia
-            input(
-                type="number"
-                class="form-control"
-                id="price"
-                name="price"
-                value=product.price
-                min="0"
-            )
-        div(class="form-group")
-            label(for="discount") Giam gia
-            input(
-                type="number"
-                class="form-control"
-                id="discount"
-                name="discountPercentage"
-                value=product.discountPercentage
-                min="0"
-            )
-        div(class="form-group")
-            label(for="stock") So luong
-            input(
-                type="number"
-                class="form-control"
-                id="stock"
-                name="stock"
-                value=product.stock
-                min="0"
-            )
+            ) #{record.description}
         div(
             class="form-group"
-            upload-image
-            )
-            label(for="thumbnail") Anh
+            upload-image 
+        )
+            label(for="thumbnail")
             input(
                 type="file"
                 class="form-control-file"
@@ -75,9 +54,9 @@ block main
                 upload-image-input
             )
             img(
-                src=product.thumbnail
-                upload-image-preview
-                class="image-prev"
+                src=record.thumbnail
+                upload-image-preview 
+                class="image-preview"
             )
         div(class="form-group")
             label(for="position") Vi tri
@@ -88,7 +67,7 @@ block main
                 name="position"
                 placeholder="Tu dong tang"
                 min="1"
-                value=product.position
+                value=record.position
             )
         div(class="form-group form-check form-check-inline")
             input(
@@ -97,7 +76,7 @@ block main
                 id="statusActive"
                 name="status"
                 value="active"
-                checked=(product.status == "active" ? true : false)
+                checked=(record.status == "active" ? true : false)
             )
             label(for="statusActive" class="form-check-label") Hoat dong
         div(class="form-group form-check form-check-inline")
@@ -107,13 +86,11 @@ block main
                 id="statusInActive"
                 name="status"
                 value="inactive"
-                checked=(product.status == "inactive" ? true : false)
+                checked=(record.status == "inactive" ? true : false)
             )
             label(for="statusInActive" class="form-check-label") Dung hoat dong
         div(class="form-group")
             button(
                 type="submit"
                 class="btn btn-primary"
-            ) Sua
-
-    script(src="/admin/js/product.js") 
+            ) Chinh sua
