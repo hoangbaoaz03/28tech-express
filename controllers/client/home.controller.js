@@ -9,12 +9,22 @@ module.exports.index = async (req, res) => {
     deleted: false,
     status: "active",
   }).limit(6);
+  const newProductsFeatured = productsHelper.priceNewProduct(productsFeatured);
   //Het lay ra san pham noi bat
 
-  const newProducts = productsHelper.priceNewProduct(productsFeatured);
+  //Lay ra san pham moi nhat
+  const productsNew = await Product.find({
+    deleted: false,
+    status: "active",
+  })
+    .sort({ position: "desc" })
+    .limit(6);
+    const newProductsNew = productsHelper.priceNewProduct(productsNew);
+  //Het lay ra san pham moi nhat
 
   res.render("client/pages/home/index", {
     pageTitle: "Trang chu",
-    productsFeatured: newProducts,
+    productsFeatured: newProductsFeatured,
+    productsNew: newProductsNew,
   });
 };
