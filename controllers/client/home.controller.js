@@ -9,7 +9,7 @@ module.exports.index = async (req, res) => {
     deleted: false,
     status: "active",
   }).limit(6);
-  const newProductsFeatured = productsHelper.priceNewProduct(productsFeatured);
+  const newProductsFeatured = productsHelper.priceNewProducts(productsFeatured);
   //Het lay ra san pham noi bat
 
   //Lay ra san pham moi nhat
@@ -19,7 +19,7 @@ module.exports.index = async (req, res) => {
   })
     .sort({ position: "desc" })
     .limit(6);
-    const newProductsNew = productsHelper.priceNewProduct(productsNew);
+    const newProductsNew = productsHelper.priceNewProducts(productsNew);
   //Het lay ra san pham moi nhat
 
   res.render("client/pages/home/index", {
