@@ -34,6 +34,26 @@ block main
                     option(value="") -- Chon danh muc --
                     if(category)
                         +select-tree(category)
+
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="featured1"
+                    name="featured"
+                    value="1"
+                )
+                label(for="statusActive" class="form-check-label") Noi bat
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="featured0"
+                    name="featured"
+                    value="0"
+                    checked
+                )
+                label(for="statusInActive" class="form-check-label") Khong noi bat
             div(class="form-group")
                 label(for="desc") Mo ta  
                 textarea(
