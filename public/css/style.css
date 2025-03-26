@@ -50,6 +50,7 @@
 }
 
 .product-item .inner-image{
+    position: relative;
     width: 100%;
     aspect-ratio: 4/3;
     border-bottom: 1px solid #ddd;
@@ -130,4 +131,17 @@
 }
 .sub-menu ul li:hover > ul{
     display: block;
+}
+
+/* featured */
+.product-item .inner-featured{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: green;
+    color: white;
+    padding: 3px 6px;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 8px;
 }
