@@ -3,94 +3,95 @@ include ../../mixins/alert.pug
 include ../../mixins/select-tree.pug
 
 block main 
-    h1(class="mb-4") Chinh sua danh muc san pham 
+    if(role.permissions.includes("products-category_view"))
+        h1(class="mb-4") Chinh sua danh muc san pham 
 
-    +alert-error(5000)
+        +alert-error(5000)
 
-    form(
-        action=`${prefixAdmin}/product-category/edit/${record.id}?_method=PATCH`
-        method="POST"
-        enctype="multipart/form-data"
-    )
-        div(class="form-group")
-            label(for="title") Tieu de 
-            input(
-                type="text"
-                class="form-control"
-                id="title"
-                name="title"
-                required
-                value=record.title
-            )
-        div(class="form-group")
-            label(for="parent_id") Danh muc cha
-            select(
-                name="parent_id"
-                id="parent_id"
-                class="form-control"
-            )
-                option(value="") -- Danh muc cha --
-                if(records)
-                    +select-tree(records, 1, record.parent_id)
-        div(class="form-group")
-            label(for="desc") Mo ta  
-            textarea(
-                class="form-control textarea-mce"
-                id="desc"
-                name="description"
-                rows="5"
-            ) #{record.description}
-        div(
-            class="form-group"
-            upload-image 
+        form(
+            action=`${prefixAdmin}/product-category/edit/${record.id}?_method=PATCH`
+            method="POST"
+            enctype="multipart/form-data"
         )
-            label(for="thumbnail")
-            input(
-                type="file"
-                class="form-control-file"
-                id="thumbnail"
-                name="thumbnail"
-                accept="image/*"
-                upload-image-input
+            div(class="form-group")
+                label(for="title") Tieu de 
+                input(
+                    type="text"
+                    class="form-control"
+                    id="title"
+                    name="title"
+                    required
+                    value=record.title
+                )
+            div(class="form-group")
+                label(for="parent_id") Danh muc cha
+                select(
+                    name="parent_id"
+                    id="parent_id"
+                    class="form-control"
+                )
+                    option(value="") -- Danh muc cha --
+                    if(records)
+                        +select-tree(records, 1, record.parent_id)
+            div(class="form-group")
+                label(for="desc") Mo ta  
+                textarea(
+                    class="form-control textarea-mce"
+                    id="desc"
+                    name="description"
+                    rows="5"
+                ) #{record.description}
+            div(
+                class="form-group"
+                upload-image 
             )
-            img(
-                src=record.thumbnail
-                upload-image-preview 
-                class="image-preview"
-            )
-        div(class="form-group")
-            label(for="position") Vi tri
-            input(
-                type="number"
-                class="form-control"
-                id="position"
-                name="position"
-                placeholder="Tu dong tang"
-                min="1"
-                value=record.position
-            )
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="statusActive"
-                name="status"
-                value="active"
-                checked=(record.status == "active" ? true : false)
-            )
-            label(for="statusActive" class="form-check-label") Hoat dong
-        div(class="form-group form-check form-check-inline")
-            input(
-                type="radio"
-                class="form-check-input"
-                id="statusInActive"
-                name="status"
-                value="inactive"
-                checked=(record.status == "inactive" ? true : false)
-            )
-            label(for="statusInActive" class="form-check-label") Dung hoat dong
-        div(class="form-group")
-            button(
-                type="submit"
-                class="btn btn-primary"
-            ) Chinh sua
+                label(for="thumbnail")
+                input(
+                    type="file"
+                    class="form-control-file"
+                    id="thumbnail"
+                    name="thumbnail"
+                    accept="image/*"
+                    upload-image-input
+                )
+                img(
+                    src=record.thumbnail
+                    upload-image-preview 
+                    class="image-preview"
+                )
+            div(class="form-group")
+                label(for="position") Vi tri
+                input(
+                    type="number"
+                    class="form-control"
+                    id="position"
+                    name="position"
+                    placeholder="Tu dong tang"
+                    min="1"
+                    value=record.position
+                )
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="statusActive"
+                    name="status"
+                    value="active"
+                    checked=(record.status == "active" ? true : false)
+                )
+                label(for="statusActive" class="form-check-label") Hoat dong
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="statusInActive"
+                    name="status"
+                    value="inactive"
+                    checked=(record.status == "inactive" ? true : false)
+                )
+                label(for="statusInActive" class="form-check-label") Dung hoat dong
+            div(class="form-group")
+                button(
+                    type="submit"
+                    class="btn btn-primary"
+                ) Chinh sua

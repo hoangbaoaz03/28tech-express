@@ -6,16 +6,18 @@ block main
 
     h1 Trang danh sach san pham
 
-    .card.mb-3 
+    if(role.permissions.includes("products-category_view"))
+        .card.mb-3 
         .card-header Danh sach san pham
             .card-body 
                 .row
                     .col-8
                     .col-4 
-                        a(
-                            href=`${prefixAdmin}/product-category/create`
-                            class="btn btn-outline-success"
-                        ) + Them moi
+                        if(role.permissions.includes("products-category_create"))
+                            a(
+                                href=`${prefixAdmin}/product-category/create`
+                                class="btn btn-outline-success"
+                            ) + Them moi
 
                 table(
                     class="table table-hover table-sm"
@@ -34,4 +36,6 @@ block main
 
                     tbody
                         +table-tree(records)
+    else 
+        p Bạn không có quyền truy cập trang này.
                 

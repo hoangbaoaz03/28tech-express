@@ -7,6 +7,7 @@ include ../../mixins/alert.pug
 include ../../mixins/sort.pug
 
 block main 
+    if(role.permissions.includes("products_view"))
     +alert-success(5000)
     +alert-error(5000)
 
@@ -20,7 +21,7 @@ block main
                     +filter-status(filterStatus)
                 .col-6
                     +search(keyword)
-    
+
     .card.mb-3 
         .card-header Sap xep
             .card-body 
@@ -77,36 +78,55 @@ block main
                                         min="1"
                                         name="position"
                                     )
-                                td 
-                                    if(item.status == "active")
-                                        a(href="javascript:;"
-                                        data-status=item.status
-                                        data-id=item.id
-                                        button-change-status
-                                        class="badge badge-success"
-                                        ) Hoạt động                       
-                                    else
-                                        a(href="javascript:;"
-                                        data-status=item.status
-                                        data-id=item.id
-                                        button-change-status
-                                        class="badge badge-danger"
-                                        ) Dung hoạt động 
+                                if(role.permissions.includes("products_edit"))
+                                    td 
+                                        if(item.status == "active")
+                                            a(href="javascript:;"
+                                                data-status=item.status
+                                                data-id=item.id
+                                                button-change-status
+                                                class="badge badge-success"
+                                            ) Hoạt động                       
+                                        else
+                                            a(
+                                                href="javascript:;"
+                                                data-status=item.status
+                                                data-id=item.id
+                                                button-change-status
+                                                class="badge badge-danger"
+                                            ) Dung hoạt động 
+                                else 
+                                    td 
+                                        if(item.status == "active")
+                                            a(
+                                                data-status=item.status
+                                                data-id=item.id
+                                                class="badge badge-success"
+                                            ) Hoạt động                       
+                                        else
+                                            a(
+                                                data-status=item.status
+                                                data-id=item.id
+                                                class="badge badge-danger"
+                                            ) Dung hoạt động 
+
 
                                 td 
                                     a(
                                         href=`${prefixAdmin}/products/detail/${item.id}`
                                         class="btn btn-secondary btn-sm"
                                     ) Chi tiet 
-                                    a(
-                                        href=`${prefixAdmin}/products/edit/${item.id}`
-                                        class="btn btn-warning btn-sm"
-                                    ) Sua 
-                                    button(
-                                        class="btn btn-danger btn-sm"
-                                        button-delete
-                                        data-id=item.id
-                                        ) Xóa
+                                    if(role.permissions.includes("products_edit"))
+                                        a(
+                                            href=`${prefixAdmin}/products/edit/${item.id}`
+                                            class="btn btn-warning btn-sm"
+                                        ) Sua 
+                                    if(role.permissions.includes("products_delete"))
+                                        button(
+                                            class="btn btn-danger btn-sm"
+                                            button-delete
+                                            data-id=item.id
+                                            ) Xóa
 
     +pagination(pagination)
 
