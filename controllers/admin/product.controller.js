@@ -60,11 +60,22 @@ module.exports.index = async (req, res) => {
     .skip(objectPagination.skip);
 
   for (const product of products) {
+    //Lay ra thong tin nguoi tao
     const user = await Account.findOne({
       _id: product.createdBy.account_id,
     });
     if (user) {
       product.accountFullName = user.fullName;
+    }
+
+    //lay ra thong tin nguoi cap nhat gan nhat
+    const updateBy = product.updatedBy.slice(-1)[0];
+    if (updateBy) {
+      const userUpdated = await Account.findOne({
+        _id: updateBy.account_id,
+      });
+
+      updateBy.accountFullName = userUpdated.fullName;
     }
   }
 
@@ -78,12 +89,24 @@ module.exports.index = async (req, res) => {
 };
 
 // [PATCH] admin/products/change-status/:status/:id
-
 module.exports.changeStatus = async (req, res) => {
   const status = req.params.status;
   const id = req.params.id;
 
-  await Product.updateOne({ _id: id }, { status: status });
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
+  await Product.updateOne(
+    { _id: id },
+    {
+      status: status,
+      $push: {
+        updatedBy: updatedBy,
+      },
+    }
+  );
 
   req.flash("success", "Status updated successfully!");
 
@@ -95,16 +118,37 @@ module.exports.changeMulti = async (req, res) => {
   const type = req.body.type;
   const ids = req.body.ids.split(", ");
 
+  const updatedBy = {
+    account_id: res.locals.user.id,
+    updatedAt: new Date(),
+  };
+
   switch (type) {
     case "active":
-      await Product.updateMany({ _id: { $in: ids } }, { status: "active" });
+      await Product.updateMany(
+        { _id: { $in: ids } },
+        {
+          status: "active",
+          $push: {
+            updatedBy: updatedBy,
+          },
+        }
+      );
       req.flash(
         "success",
         `Status updated successfully for ${ids.length} items!`
       );
       break;
     case "inactive":
-      await Product.updateMany({ _id: { $in: ids } }, { status: "inactive" });
+      await Product.updateMany(
+        { _id: { $in: ids } },
+        {
+          status: "inactive",
+          $push: {
+            updatedBy: updatedBy,
+          },
+        }
+      );
       req.flash(
         "success",
         `Status updated successfully for ${ids.length} items!`
@@ -127,7 +171,15 @@ module.exports.changeMulti = async (req, res) => {
       for (const item of ids) {
         let [id, position] = item.split("-");
         position = parseInt(position);
-        await Product.updateOne({ _id: id }, { position: position });
+        await Product.updateOne(
+          { _id: id },
+          {
+            position: position,
+            $push: {
+              updatedBy: updatedBy,
+            },
+          }
+        );
       }
       req.flash(
         "success",
@@ -240,7 +292,20 @@ module.exports.editPatch = async (req, res) => {
   }
 
   try {
-    await Product.updateOne({ _id: id }, req.body);
+    const updatedBy = {
+      account_id: res.locals.user.id,
+      updatedAt: new Date(),
+    };
+
+    await Product.updateOne(
+      { _id: id },
+      {
+        ...req.body,
+        $push: {
+          updatedBy: updatedBy,
+        },
+      }
+    );
     req.flash("success", "Item updated successfully!");
   } catch (error) {
     req.flash("success", "Item updated failed!");
