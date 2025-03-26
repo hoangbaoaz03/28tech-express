@@ -5,6 +5,7 @@ include ../../mixins/pagination.pug
 include ../../mixins/form-change-multi.pug
 include ../../mixins/alert.pug
 include ../../mixins/sort.pug
+include ../../mixins/moment.pug
 
 block main 
     if(role.permissions.includes("products_view"))
@@ -55,6 +56,7 @@ block main
                             th Giá
                             th Vi tri
                             th Trạng thái 
+                            th Nguoi tao
                             th Hành động 
 
                     tbody
@@ -110,7 +112,9 @@ block main
                                                 class="badge badge-danger"
                                             ) Dung hoạt động 
 
-
+                                td 
+                                    p #{item.accountFullName}
+                                    +formatDateTime(item.createdBy.createdAt)
                                 td 
                                     a(
                                         href=`${prefixAdmin}/products/detail/${item.id}`

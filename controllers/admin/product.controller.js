@@ -1,4 +1,5 @@
 const Product = require("../../models/product.model");
+const Account = require("../../models/account.model");
 const ProductCategory = require("../../models/product-category.model");
 
 const systemConfig = require("../../config/system");
@@ -58,6 +59,15 @@ module.exports.index = async (req, res) => {
     .limit(objectPagination.limitItems)
     .skip(objectPagination.skip);
 
+  for (const product of products) {
+    const user = await Account.findOne({
+      _id: product.createdBy.account_id,
+    });
+    if (user) {
+      product.accountFullName = user.fullName;
+    }
+  }
+
   res.render("admin/pages/products/index", {
     pageTitle: "Trang danh sach san pham",
     products: products,
@@ -103,7 +113,13 @@ module.exports.changeMulti = async (req, res) => {
     case "deleteAll":
       await Product.updateMany(
         { _id: { $in: ids } },
-        { deleted: true, deletedAt: new Date() }
+        {
+          deleted: true,
+          deletedBy: {
+            account_id: res.locals.user.id,
+            deletedAt: new Date(),
+          },
+        }
       );
       req.flash("success", `Deleted successfully for ${ids.length} items!`);
       break;
@@ -134,7 +150,10 @@ module.exports.deleteItem = async (req, res) => {
     { _id: id },
     {
       deleted: true,
-      deletedAt: new Date(),
+      deletedBy: {
+        account_id: res.locals.user.id,
+        deletedAt: new Date(),
+      },
     }
   );
   req.flash("success", `Item deleted successfully!`);
@@ -170,6 +189,10 @@ module.exports.createPost = async (req, res) => {
   } else {
     req.body.position = parseInt(req.body.position);
   }
+
+  req.body.createdBy = {
+    account_id: res.locals.user.id,
+  };
 
   const product = new Product(req.body);
   await product.save();
