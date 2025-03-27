@@ -6,8 +6,8 @@ header.header
             .col-3 
                 .inner-logo 
                     a(href="/")
-                        img(src="/images/logo.svg", alt="Logo")
-            
+                        img(src="/images/logo.svg" alt="Logo")
+
             .col-5 
                 form(
                     action="/search"
@@ -26,7 +26,7 @@ header.header
                             class="btn btn-primary"
                         ) Tim
 
-            
+
             .col-4
                 .inner-menu 
                     ul 
@@ -36,4 +36,5 @@ header.header
                             -const pathProduct = "/products"
                             a(href=pathProduct) San pham
                             +sub-menu(layoutProductCategory, pathProduct)
-                            
+                        li 
+                            a(href="/cart") Gio hang(#{miniCart ? miniCart.totalQuantity : 0})

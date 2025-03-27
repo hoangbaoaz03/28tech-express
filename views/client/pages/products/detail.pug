@@ -1,7 +1,9 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
 
+
 block main 
+
     .product-detail
         .container.my-3
             .row 
@@ -25,7 +27,7 @@ block main
                         div(class="inner-stock") Stock: #{product.stock}
                     
                     form(
-                        action=`/cart/add${product.id}`
+                        action=`/cart/add/${product.id}`
                         method="POST"
                     )
                         input(
