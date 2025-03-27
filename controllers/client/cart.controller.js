@@ -90,3 +90,54 @@ module.exports.addPost = async (req, res) => {
 
   res.redirect("back");
 };
+
+//[GET] /cart/delete/:productId
+module.exports.delete = async (req, res) => {
+  const cartId = req.cookies.cartId;
+  const productId = req.params.id;
+  //C1
+  await Cart.updateOne(
+    {
+      _id: cartId,
+    },
+    {
+      $pull: {
+        products: { product_id: productId },
+      },
+    }
+  );
+  //C2
+  // const cart = await Cart.findById(cartId);
+  // const indexProduct = cart.products.findIndex(
+  //   (dataIndex) => dataIndex.product_id === producId
+  // );
+  // cart.products.splice(indexProduct, 1);
+  // await cart.save();
+
+  req.flash("success", "Item deleted from cart successfully!");
+
+  res.redirect("back");
+};
+
+//[GET] /cart/update/:productId/:quantity
+module.exports.update = async (req, res) => {
+  const cartId = req.cookies.cartId;
+  const productId = req.params.productId;
+  const quantity = req.params.quantity;
+
+  await Cart.updateOne(
+    {
+      _id: cartId,
+      "products.product_id": productId,
+    },
+    {
+      $set: {
+        "products.$.quantity": quantity,
+      },
+    }
+  );
+
+  req.flash("success", "Item deleted from cart successfully!");
+
+  res.redirect("back");
+};
