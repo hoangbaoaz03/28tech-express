@@ -1,5 +1,6 @@
 const User = require("../../models/user.model");
 const ForgotPassword = require("../../models/forgot-password.model");
+const Cart = require("../../models/cart.model");
 
 const md5 = require("md5");
 
@@ -36,14 +37,14 @@ module.exports.registerPost = async (req, res) => {
   res.redirect("/");
 };
 
-// [GET] /user/register
+// [GET] /user/login
 module.exports.login = (req, res) => {
   res.render("client/pages/user/login", {
     pageTitle: "Trang dang nhap",
   });
 };
 
-// [POST] /user/register
+// [POST] /user/login
 module.exports.loginPost = async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -70,6 +71,15 @@ module.exports.loginPost = async (req, res) => {
     res.redirect("back");
     return;
   }
+
+  await Cart.updateOne(
+    {
+      _id: req.cookies.cartId,
+    },
+    {
+      user_id: user.id,
+    }
+  );
 
   res.cookie("tokenUser", user.tokenUser);
 
@@ -157,6 +167,7 @@ module.exports.otpPasswordPost = async (req, res) => {
   });
 
   res.cookie("tokenUser", user.tokenUser);
+
   res.redirect("/user/password/reset");
 };
 
@@ -183,4 +194,11 @@ module.exports.resetPasswordPost = async (req, res) => {
   req.flash("Doi mat khau thanh cong");
 
   res.redirect("/");
+};
+
+//[GET] /user/info
+module.exports.info = async (req, res) => {
+  res.render("client/pages/user/info", {
+    pageTitle: "Thong tin tai khoan",
+  });
 };
